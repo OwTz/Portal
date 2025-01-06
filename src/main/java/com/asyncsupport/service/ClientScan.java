@@ -33,4 +33,8 @@ public class ClientScan {
         return users;
     }
 
+    public void saveUser(User user){
+        query.save(user);
+    }
+
 }
