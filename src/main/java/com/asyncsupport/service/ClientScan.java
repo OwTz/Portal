@@ -22,7 +22,6 @@ public class ClientScan {
         for (User user : query.findAll()) {
             if (user.getId().equals(id)) {
                 usuario = user;
-                return user;
             }
         }
         return usuario;
@@ -35,6 +34,15 @@ public class ClientScan {
 
     public void saveUser(User user){
         query.save(user);
+    }
+    public List<User> findByName(String name){
+        List<User> users = new ArrayList<>();
+        for (User usuario : query.findAll()) {
+            if (usuario.getNome().equals(name)) {
+                users.add(usuario);
+            }
+        }
+        return users;
     }
 
 }

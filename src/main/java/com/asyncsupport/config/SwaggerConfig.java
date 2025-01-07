@@ -14,6 +14,6 @@ public class SwaggerConfig {
                 .info(new Info()
                         .title("ASYNC")
                         .description("Aplicação de usuário ")
-                        .version("1.0.1")); // Personalize com o título, descrição e versão da sua API
+                        .version("1.0.1")); // alteração da versão 
     }
 }
