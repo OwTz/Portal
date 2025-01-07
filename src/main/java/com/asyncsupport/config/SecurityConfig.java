@@ -6,7 +6,10 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.web.SecurityFilterChain;
-
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 
 @Configuration
 @EnableWebSecurity
@@ -14,14 +17,31 @@ import org.springframework.security.web.SecurityFilterChain;
 public class SecurityConfig {
 
     @Bean
+    public UserDetailsService userDetailsService() {
+        UserDetails admin = User.withDefaultPasswordEncoder()
+                .username("admin")
+                .password("admin123")
+                .roles("ADMIN")
+                .build();
+
+        UserDetails user = User.withDefaultPasswordEncoder()
+                .username("user")
+                .password("user123")
+                .roles("USER")
+                .build();
+
+        return new InMemoryUserDetailsManager(admin, user);
+    }
+
+    @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(csrf -> csrf.disable()) // Nova sintaxe para desativar CSRF (apenas para testes)
-                .authorizeHttpRequests(auth -> auth
+                .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/home/**").permitAll()
-                        .requestMatchers("/users").permitAll()// Apenas usuários com papel USER acessam /home
+                        .requestMatchers("/scripts/home-page.js").permitAll()
+                        .requestMatchers("/style.css").permitAll()
                         .requestMatchers("/admin/**").hasRole("ADMIN") // Apenas usuários com papel ADMIN acessam /admin
-                        .anyRequest().authenticated() // Todas as outras rotas requerem autenticação
+                        .anyRequest().hasRole("ADMIN") // Todas as outras rotas requerem autenticação
                 )
                 .formLogin(form -> form.permitAll())
                 .logout(logout -> logout.permitAll()); // Habilita o formulário de login padrão
